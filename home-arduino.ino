@@ -1,4 +1,5 @@
 // liquid crystal library from: https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads/
+// DHT library used: "DHT-sensor-library"
 
 #include <LiquidCrystal_I2C.h>
 #include "DHT.h"
@@ -14,10 +15,8 @@ DHT dht3(DHTPIN_3, DHTTYPE);
 DHT dht4(DHTPIN_4, DHTTYPE);
 DHT dht5(DHTPIN_5, DHTTYPE);
 
-LiquidCrystal_I2C lcd(0x3f, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-
-const bool TESTING = false;  // change to enable / disable testing
-int test_counter = 0;
+// address could be also 0x3f depending on display
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 void setup() {
   Serial.begin(9600);
@@ -82,8 +81,14 @@ void printDhtOutput(const int pin, const float temperature, const float humidity
   Serial.println(" %"); 
 }
 
-int refresh_interval = 2000;
+const bool TESTING = false;  // change to enable or disable testing
+int test_counter = 0;
+
+// REFRESH INTERVAL AND ARDUINO RESET SETTINGS:
 int lcd_reset_counter = 0;
+int refresh_interval = 2000;      // how often the data are being read from sensors
+int reset_counter_limit = 1900;   // after how many intervals the arduino is being reset
+void(* resetFunc) (void) = 0;     // arduino built-in reset function declared at address 0
 
 void loop() {
   // Wait a few seconds between measurements.
@@ -102,9 +107,9 @@ void loop() {
   float dht5_humidity = dht5.readHumidity();
 
   // restart display periodically
-  if (lcd_reset_counter >= 7200) {
+  if (lcd_reset_counter >= reset_counter_limit) {
     lcd_reset_counter = 0;
-    lcd.begin (20, 4);
+    resetFunc();
   }
 
   // TESTING FOR COMMON SCENARIOS
