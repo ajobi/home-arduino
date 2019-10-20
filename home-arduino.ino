@@ -1,3 +1,4 @@
+// liquidcrystal library from: https://github.com/ajobi/home-arduino
 #include <LiquidCrystal_I2C.h>
 #include "DHT.h"
 
