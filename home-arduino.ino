@@ -1,4 +1,4 @@
-// liquid crystal library from: https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads/
+// liquid crystal library from: https://github.com/fmalpartida/New-LiquidCrystal
 // DHT library used: "DHT-sensor-library"
 
 #include <LiquidCrystal_I2C.h>
@@ -18,6 +18,40 @@ DHT dht5(DHTPIN_5, DHTTYPE);
 // address could be also 0x3f depending on display
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
+void setupEmptyPins() {
+  pinMode(6,OUTPUT);
+  pinMode(7,OUTPUT);
+  pinMode(8,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(12,OUTPUT);
+  pinMode(13,OUTPUT);
+  pinMode(A0,OUTPUT);
+  pinMode(A1,OUTPUT);
+  pinMode(A2,OUTPUT);
+  pinMode(A3,OUTPUT);
+  pinMode(A6,OUTPUT);
+  pinMode(A7,OUTPUT);
+}
+
+void writeEmptyPins() {
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+  analogWrite(A0, HIGH);
+  analogWrite(A1, HIGH);
+  analogWrite(A2, HIGH);
+  analogWrite(A3, HIGH);
+  analogWrite(A6, HIGH);
+  analogWrite(A7, HIGH);
+}
+
 void setup() {
   Serial.begin(9600);
   Serial.println("setup()");
@@ -27,12 +61,14 @@ void setup() {
   dht4.begin();
   dht5.begin();
 
-lcd.backlight();
+  lcd.backlight();
   lcd.begin (20, 4);
   //lcd.backlight();
 
   lcd.setBacklight(HIGH);
-  //lcd.home(); // go home
+  //lcd.home(); // go
+
+  setupEmptyPins();
 }
 
 void printDhtOutput(const int pin, const float temperature, const float humidity) {  
@@ -168,6 +204,8 @@ void loop() {
   printDhtOutput(DHTPIN_3, dht3_temperature, dht3_humidity);
   printDhtOutput(DHTPIN_4, dht4_temperature, dht4_humidity);
   printDhtOutput(DHTPIN_5, dht5_temperature, dht5_humidity);
+
+  writeEmptyPins();
 
   lcd_reset_counter++;
 }
